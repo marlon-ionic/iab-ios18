@@ -1,0 +1,7 @@
+{
+  "name": "iab-ios18",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
