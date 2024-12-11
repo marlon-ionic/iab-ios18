@@ -1,6 +1,18 @@
-#container {
-  text-align: center;
+section {
+  display: flex;
+  flex-flow: column;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+}
 
+#container {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  text-align: center;
   position: absolute;
   left: 0;
   right: 0;
