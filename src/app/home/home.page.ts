@@ -12,11 +12,12 @@ import { IABService } from '../services/iab.service';
 export class HomePage {
   private readonly iabService = inject(IABService);
 
-  async iab(target: '_self' | '_blank' | '_system' | '_top' | '_parent' = '_blank') {
+  async iab(target?: '_blank' | '_system' | '_top' ) {
     if(target === '_system') {
-    await this.iabService.openSystemBrowser('https://ionic.io');
+    await this.iabService.openSystemBrowser('https://ionic.io?a=1');
   } else {
-    await this.iabService.openInAppBrowser('https://ionic.io');
+    const b = await this.iabService.openInAppBrowser('https://ionic.io?a=1');
+    b?.show();
   }
 }
 }

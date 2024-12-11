@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { InAppBrowser, InAppBrowserObject, InAppBrowserOptions } from '@awesome-cordova-plugins/in-app-browser/ngx';
 import { Preferences } from '@capacitor/preferences';
 import { Capacitor } from '@capacitor/core';
-import { HttpHeaders, HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +14,7 @@ export class IABService {
   constructor(private readonly inAppBrowser: InAppBrowser ) { }
 
   // public methods
-  public async openInAppBrowser(ssoUrl: string): Promise<void> {
+  public async openInAppBrowser(ssoUrl: string): Promise<InAppBrowserObject|undefined> {
     const location = Capacitor.getPlatform() === 'android' ? 'yes' : 'no';
     const options: InAppBrowserOptions = {
         hideurlbar: 'yes',
@@ -31,21 +30,16 @@ export class IABService {
         clearsessioncache: 'yes'
     };
 
-    await this.OpenBrowser(ssoUrl, '_blank', options);
+    return await this.OpenBrowser(ssoUrl, '_blank', options);
 }
 
-public async openSystemBrowser(ssoUrl: string): Promise<void> {
-    await this.OpenBrowser(ssoUrl, '_system');
+public async openSystemBrowser(ssoUrl: string): Promise<InAppBrowserObject|undefined> {
+    return await this.OpenBrowser(ssoUrl, '_system');
 }
 
 // private methods
-private buildHttpParams(token?: string): HttpParams {
-    return new HttpParams();
-}
-private async OpenBrowser(ssoUrl: string, target: string, options?: InAppBrowserOptions) {
-    // prep delegate parameters
-    const body: HttpParams = this.buildHttpParams();
-    const headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
+
+private async OpenBrowser(ssoUrl: string, target?: string, options?: InAppBrowserOptions) {
     this.duration = new Date().toISOString();
     await Preferences.set({ key: 'RATING_KEY', value: this.duration });
     this.browser = this.inAppBrowser.create(`${ssoUrl}&token=${this.randomJwtToken}`, target, options);
@@ -53,6 +47,7 @@ private async OpenBrowser(ssoUrl: string, target: string, options?: InAppBrowser
     if (this.browser && Object.keys(this.browser).length > 0) {
         this.setupInAppBrowserEvents(this.browser);
     }
+    return this.browser;
 }
 
 private setupInAppBrowserEvents(inAppBrowserObject: InAppBrowserObject): void {
